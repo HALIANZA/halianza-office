@@ -146,7 +146,9 @@ button:disabled {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
+  transition:
+    background 150ms ease,
+    color 150ms ease;
 }
 
 .nav-item:hover {
@@ -264,7 +266,9 @@ button:disabled {
   border-radius: 9px;
   background: #f9f9fc;
   color: #8c90a1;
-  transition: border-color 150ms ease, background 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
 }
 
 .search-box:focus-within {
@@ -419,7 +423,10 @@ button:disabled {
   background: #fff;
   text-align: left;
   cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .template-card:hover {
@@ -478,7 +485,9 @@ button:disabled {
   color: #b1b4c3;
   opacity: 0;
   transform: translateX(-3px);
-  transition: opacity 150ms ease, transform 150ms ease;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
 }
 
 .template-card:hover .template-arrow {

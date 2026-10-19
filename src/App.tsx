@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import RichTextEditor from "./components/editor/RichTextEditor";
 import {
@@ -7,6 +6,25 @@ import {
   type DocumentItem,
 } from "./services/documentStorage";
 import "./App.css";
+
+type RibbonTab =
+  | "Arquivo"
+  | "Início"
+  | "Inserir"
+  | "Layout"
+  | "Referências"
+  | "Revisão"
+  | "Exibir";
+
+const ribbonTabs: RibbonTab[] = [
+  "Arquivo",
+  "Início",
+  "Inserir",
+  "Layout",
+  "Referências",
+  "Revisão",
+  "Exibir",
+];
 
 const initialDocuments: DocumentItem[] = [
   {
@@ -39,9 +57,13 @@ function App() {
   const [search, setSearch] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [dirty, setDirty] = useState(false);
+
   const [saveStatus, setSaveStatus] = useState<
     "saved" | "pending" | "saving" | "error"
   >("saved");
+
+  const [activeRibbonTab, setActiveRibbonTab] =
+    useState<RibbonTab>("Início");
 
   const activeDocument =
     documents.find((document) => document.id === activeDocumentId) ??
@@ -134,12 +156,9 @@ function App() {
       updatedAt: "Agora",
     };
 
-    setDocuments((currentDocuments) => [
-      ...currentDocuments,
-      newDocument,
-    ]);
-
+    setDocuments((currentDocuments) => [...currentDocuments, newDocument]);
     setActiveDocumentId(id);
+    setActiveRibbonTab("Início");
     markChanged();
   }
 
@@ -199,6 +218,7 @@ function App() {
           <>
             <div className="search-container">
               <span className="search-icon">⌕</span>
+
               <input
                 type="search"
                 value={search}
@@ -210,7 +230,9 @@ function App() {
 
             <div className="documents-heading">
               <span>SEUS DOCUMENTOS</span>
-              <span className="document-count">{filteredDocuments.length}</span>
+              <span className="document-count">
+                {filteredDocuments.length}
+              </span>
             </div>
 
             <nav className="document-list" aria-label="Documentos">
@@ -229,7 +251,9 @@ function App() {
                     title={document.title}
                   >
                     <span className="document-icon">▤</span>
-                    <span className="document-title">{document.title}</span>
+                    <span className="document-title">
+                      {document.title}
+                    </span>
                   </button>
 
                   {documents.length > 1 && (
@@ -246,7 +270,9 @@ function App() {
               ))}
 
               {filteredDocuments.length === 0 && (
-                <p className="empty-search">Nenhum documento encontrado.</p>
+                <p className="empty-search">
+                  Nenhum documento encontrado.
+                </p>
               )}
             </nav>
           </>
@@ -301,25 +327,48 @@ function App() {
           </div>
         </header>
 
-        <div className="editor-toolbar">
-          <div className="toolbar-document-info">
-            <span className="toolbar-document-icon">▤</span>
+        <nav className="ribbon-tabs" aria-label="Faixa de opções">
+          {ribbonTabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              className={`ribbon-tab ${
+                activeRibbonTab === tab ? "ribbon-tab-active" : ""
+              }`}
+              aria-current={activeRibbonTab === tab ? "page" : undefined}
+              onClick={() => setActiveRibbonTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </nav>
 
-            <input
-              className="document-name-input"
-              value={activeDocument.title}
-              onChange={(event) =>
-                renameDocument(activeDocument.id, event.target.value)
-              }
-              aria-label="Nome do documento"
-              spellCheck={false}
-            />
+        {activeRibbonTab === "Início" ? (
+          <div className="editor-toolbar">
+            <div className="toolbar-document-info">
+              <span className="toolbar-document-icon">▤</span>
+
+              <input
+                className="document-name-input"
+                value={activeDocument.title}
+                onChange={(event) =>
+                  renameDocument(activeDocument.id, event.target.value)
+                }
+                aria-label="Nome do documento"
+                spellCheck={false}
+              />
+            </div>
+
+            <div className="toolbar-divider" />
+
+            <span className="toolbar-hint">Editor de documentos</span>
           </div>
-
-          <div className="toolbar-divider" />
-
-          <span className="toolbar-hint">Editor de documentos</span>
-        </div>
+        ) : (
+          <div className="ribbon-placeholder" role="status">
+            <strong>{activeRibbonTab}</strong>
+            <span>Esta seção está em desenvolvimento.</span>
+          </div>
+        )}
 
         <div className="editor-scroll-area">
           <article className="document-page">

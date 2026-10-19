@@ -1,4 +1,3 @@
-
 export type DocumentItem = {
   id: string;
   title: string;
@@ -28,9 +27,7 @@ function isDocumentItem(value: unknown): value is DocumentItem {
   );
 }
 
-function isDocumentWorkspace(
-  value: unknown,
-): value is DocumentWorkspace {
+function isDocumentWorkspace(value: unknown): value is DocumentWorkspace {
   if (typeof value !== "object" || value === null) {
     return false;
   }
@@ -43,8 +40,7 @@ function isDocumentWorkspace(
     workspace.documents.every(isDocumentItem) &&
     typeof workspace.activeDocumentId === "string" &&
     workspace.documents.some(
-      (document: DocumentItem) =>
-        document.id === workspace.activeDocumentId,
+      (document: DocumentItem) => document.id === workspace.activeDocumentId,
     )
   );
 }
@@ -61,7 +57,8 @@ export function loadWorkspace(): DocumentWorkspace | null {
 
     if (!isDocumentWorkspace(parsedValue)) {
       console.error(
-        "HALIANZA Office: os dados salvos são inválidos. O conteúdo original foi preservado.",
+        "HALIANZA Office: os dados salvos são inválidos. " +
+          "O conteúdo original foi preservado.",
       );
 
       return null;
@@ -78,11 +75,46 @@ export function loadWorkspace(): DocumentWorkspace | null {
   }
 }
 
-export function saveWorkspace(
-  workspace: DocumentWorkspace,
-): boolean {
+export function saveWorkspace(workspace: DocumentWorkspace): boolean {
   try {
+    // Não permite salvar uma estrutura inválida.
+    if (!isDocumentWorkspace(workspace)) {
+      console.error("HALIANZA Office: tentativa de salvar dados inválidos.");
+
+      return false;
+    }
+
+    const storedValue = localStorage.getItem(STORAGE_KEY);
+
+    // Se já existe conteúdo, ele precisa ser válido antes de
+    // permitirmos que seja substituído.
+    if (storedValue !== null) {
+      let parsedValue: unknown;
+
+      try {
+        parsedValue = JSON.parse(storedValue);
+      } catch {
+        console.error(
+          "HALIANZA Office: o armazenamento contém dados " +
+            "que não podem ser interpretados. " +
+            "O salvamento foi bloqueado para proteger os dados.",
+        );
+
+        return false;
+      }
+
+      if (!isDocumentWorkspace(parsedValue)) {
+        console.error(
+          "HALIANZA Office: o armazenamento contém dados inválidos. " +
+            "O salvamento foi bloqueado para proteger os dados.",
+        );
+
+        return false;
+      }
+    }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace));
+
     return true;
   } catch (error) {
     console.error(

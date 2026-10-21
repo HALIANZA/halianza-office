@@ -265,7 +265,11 @@
   cursor: pointer;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"] > label input,
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input,
 .tiptap ul[data-type="taskList"] > li[data-type="taskItem"] > label input {
   appearance: none;
   -webkit-appearance: none;
@@ -280,11 +284,21 @@
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"] > label input::before,
-.tiptap ul[data-type="taskList"] > li[data-type="taskItem"] > label input::before {
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input::before,
+.tiptap
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input::before {
   width: 5px;
   height: 10px;
   content: "";
@@ -294,14 +308,30 @@
   transition: transform 120ms ease;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"] > label input:checked,
-.tiptap ul[data-type="taskList"] > li[data-type="taskItem"] > label input:checked {
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input:checked,
+.tiptap
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input:checked {
   border-color: #171717;
   background: #171717;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"] > label input:checked::before,
-.tiptap ul[data-type="taskList"] > li[data-type="taskItem"] > label input:checked::before {
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input:checked::before,
+.tiptap
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > label
+  input:checked::before {
   transform: rotate(45deg) scale(1);
 }
 
@@ -311,16 +341,34 @@
   min-width: 0;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"] > div > p,
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"]
+  > div
+  > p,
 .tiptap ul[data-type="taskList"] > li[data-type="taskItem"] > div > p {
   margin: 0 !important;
   line-height: 1.6;
 }
 
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"][data-checked="true"] > div,
-.rich-text-content ul[data-type="taskList"] > li[data-type="taskItem"][data-checked="true"] > div p,
-.tiptap ul[data-type="taskList"] > li[data-type="taskItem"][data-checked="true"] > div,
-.tiptap ul[data-type="taskList"] > li[data-type="taskItem"][data-checked="true"] > div p {
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"][data-checked="true"]
+  > div,
+.rich-text-content
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"][data-checked="true"]
+  > div
+  p,
+.tiptap
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"][data-checked="true"]
+  > div,
+.tiptap
+  ul[data-type="taskList"]
+  > li[data-type="taskItem"][data-checked="true"]
+  > div
+  p {
   color: #777a80;
   text-decoration: line-through;
   text-decoration-color: #777a80;

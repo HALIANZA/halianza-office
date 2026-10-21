@@ -62,8 +62,7 @@ function App() {
     "saved" | "pending" | "saving" | "error"
   >("saved");
 
-  const [activeRibbonTab, setActiveRibbonTab] =
-    useState<RibbonTab>("Início");
+  const [activeRibbonTab, setActiveRibbonTab] = useState<RibbonTab>("Início");
 
   const activeDocument =
     documents.find((document) => document.id === activeDocumentId) ??
@@ -230,9 +229,7 @@ function App() {
 
             <div className="documents-heading">
               <span>SEUS DOCUMENTOS</span>
-              <span className="document-count">
-                {filteredDocuments.length}
-              </span>
+              <span className="document-count">{filteredDocuments.length}</span>
             </div>
 
             <nav className="document-list" aria-label="Documentos">
@@ -251,9 +248,7 @@ function App() {
                     title={document.title}
                   >
                     <span className="document-icon">▤</span>
-                    <span className="document-title">
-                      {document.title}
-                    </span>
+                    <span className="document-title">{document.title}</span>
                   </button>
 
                   {documents.length > 1 && (
@@ -270,9 +265,7 @@ function App() {
               ))}
 
               {filteredDocuments.length === 0 && (
-                <p className="empty-search">
-                  Nenhum documento encontrado.
-                </p>
+                <p className="empty-search">Nenhum documento encontrado.</p>
               )}
             </nav>
           </>
@@ -299,9 +292,7 @@ function App() {
             <div className="breadcrumb">
               <span className="breadcrumb-muted">Documentos</span>
               <span className="breadcrumb-separator">/</span>
-              <span className="breadcrumb-current">
-                {activeDocument.title}
-              </span>
+              <span className="breadcrumb-current">{activeDocument.title}</span>
             </div>
           </div>
 

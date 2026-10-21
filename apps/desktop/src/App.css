@@ -1079,7 +1079,11 @@ button:disabled {
   user-select: none;
 }
 
-.rich-text-content ul[data-type="taskList"] li[data-type="taskItem"] > label input {
+.rich-text-content
+  ul[data-type="taskList"]
+  li[data-type="taskItem"]
+  > label
+  input {
   display: block;
   width: 15px;
   height: 15px;
@@ -1093,7 +1097,10 @@ button:disabled {
   min-width: 0;
 }
 
-.rich-text-content ul[data-type="taskList"] li[data-type="taskItem"][data-checked="true"] > div {
+.rich-text-content
+  ul[data-type="taskList"]
+  li[data-type="taskItem"][data-checked="true"]
+  > div {
   color: #8a8178;
   text-decoration: line-through;
   text-decoration-thickness: 1px;

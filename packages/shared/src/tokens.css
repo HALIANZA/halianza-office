@@ -1,0 +1,101 @@
+/* HALIANZA Office — tokens de design compartilhados por toda a suíte.
+   Valores marcados "(proposto)" não vieram da paleta oficial. */
+
+:root {
+  color-scheme: light;
+
+  /* Superfícies: janela > painel lateral > barra/painel > menu > diálogo */
+  --hz-bg: #f3f4f6;
+  --hz-surface-subtle: #f8f9fa; /* (proposto) */
+  --hz-surface: #ffffff;
+  --hz-surface-raised: #ffffff;
+  --hz-surface-overlay: #ffffff;
+
+  /* Texto */
+  --hz-text: #202124;
+  --hz-text-secondary: #62656d;
+
+  /* Bordas e interação */
+  --hz-border: #d8dadf;
+  --hz-border-subtle: #e6e8ec; /* (proposto) */
+  --hz-hover: rgb(32 33 36 / 6%); /* (proposto) */
+  --hz-primary: #356ae6;
+  --hz-primary-hover: #2c5ad0; /* (proposto) */
+  --hz-on-primary: #ffffff;
+  --hz-selection: #dce7ff;
+
+  /* Semânticas — independentes das cores dos aplicativos (propostas) */
+  --hz-success: #1f7a3d;
+  --hz-success-subtle: #e6f4ea;
+  --hz-error: #c62828;
+  --hz-error-subtle: #fdecea;
+  --hz-warning: #9a5b00;
+  --hz-warning-subtle: #fff4e0;
+  --hz-info: #0b6bcb;
+  --hz-info-subtle: #e8f1fd;
+
+  /* Marca */
+  --hz-brand-black: #0a0a0b;
+  --hz-brand-ring: transparent;
+
+  /* Identidade dos aplicativos (usadas só em ícones e detalhes pontuais) */
+  --hz-app-writer: #356ae6;
+  --hz-app-sheets: #16835b;
+  --hz-app-slides: #c84d5a;
+  --hz-app-mail: #7656c8;
+  --hz-app-teams: #6264a7;
+  --hz-app-drive: #168fa5;
+  --hz-app-notes: #b7791f;
+  --hz-on-app: #ffffff;
+
+  /* Elevação (proposta) */
+  --hz-shadow-raised: 0 4px 14px rgb(32 33 36 / 10%);
+  --hz-shadow-overlay: 0 12px 32px rgb(32 33 36 / 18%);
+
+  /* Tipografia, raios e espaçamento */
+  --hz-font-sans: "Inter", "DM Sans", sans-serif;
+  --hz-radius-sm: 6px;
+  --hz-radius-md: 8px;
+  --hz-radius-lg: 12px;
+  --hz-space-1: 4px;
+  --hz-space-2: 8px;
+  --hz-space-3: 12px;
+  --hz-space-4: 16px;
+  --hz-space-5: 24px;
+  --hz-space-6: 32px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --hz-bg: #17181b;
+  --hz-surface-subtle: #1d1f23; /* (proposto) */
+  --hz-surface: #222429;
+  --hz-surface-raised: #2a2d33; /* (proposto) */
+  --hz-surface-overlay: #30333a; /* (proposto) */
+
+  --hz-text: #f5f5f5;
+  --hz-text-secondary: #b4b6bd;
+
+  --hz-border: #34363b;
+  --hz-border-subtle: #2b2d32; /* (proposto) */
+  --hz-hover: rgb(255 255 255 / 8%); /* (proposto) */
+  --hz-primary: #7297ff;
+  --hz-primary-hover: #8aa8ff; /* (proposto) */
+  --hz-on-primary: #17181b; /* branco sobre #7297ff dá só 2,77:1 */
+  --hz-selection: #293b63;
+
+  --hz-success: #5cc184;
+  --hz-success-subtle: #1d3a2a;
+  --hz-error: #ff8a80;
+  --hz-error-subtle: #4a2523;
+  --hz-warning: #f2b24c;
+  --hz-warning-subtle: #46361a;
+  --hz-info: #7cb8ff;
+  --hz-info-subtle: #1e3552;
+
+  --hz-brand-ring: rgb(255 255 255 / 16%);
+
+  --hz-shadow-raised: 0 4px 14px rgb(0 0 0 / 35%);
+  --hz-shadow-overlay: 0 12px 32px rgb(0 0 0 / 50%);
+}

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { AppId, OpenRequest, RecentItem, SuiteApp } from "./apps";
-import ProfileAvatar from "./ProfileAvatar";
+import ProfileMenu from "./ProfileMenu";
 
 type HomeProps = {
   apps: SuiteApp[];
@@ -105,7 +105,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
           />
         </label>
 
-        <ProfileAvatar />
+        <ProfileMenu />
       </header>
 
       <div className="hs-body">
@@ -139,7 +139,11 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
                 }
                 onClick={() => onOpenApp(app.id)}
               >
-                <span className="hs-rail-glyph" aria-hidden="true">
+                <span
+                  className="hs-rail-glyph"
+                  data-app={app.id}
+                  aria-hidden="true"
+                >
                   {app.glyph}
                 </span>
                 <span className="hs-rail-label">{app.name}</span>
@@ -197,7 +201,11 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
                     </span>
 
                     <span className="hs-recent-meta">
-                      <span className="hs-app-glyph" aria-hidden="true">
+                      <span
+                        className="hs-app-glyph"
+                        data-app={item.appId}
+                        aria-hidden="true"
+                      >
                         {glyphOf(item.appId)}
                       </span>
                       <span className="hs-recent-text">

@@ -2,8 +2,8 @@
 
 :root {
   font-family: "Inter", "DM Sans", sans-serif;
-  color: #292a2d;
-  background: #f5f5f3;
+  color: var(--hz-text);
+  background: var(--hz-bg);
   font-synthesis: style;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,7 +41,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #a7835f;
+  outline: 2px solid var(--hz-primary);
   outline-offset: 2px;
 }
 

@@ -1,6 +1,7 @@
 import { Suspense, useRef, useState } from "react";
 import AppSwitcherButton from "./shell/AppSwitcherButton";
 import Home from "./shell/Home";
+import ProfileAvatar from "./shell/ProfileAvatar";
 import {
   suiteApps,
   type AppId,
@@ -56,6 +57,7 @@ function App() {
             >
               <Product
                 command={commands[id]}
+                topbarEnd={<ProfileAvatar />}
                 topbarStart={
                   <AppSwitcherButton onClick={() => setActiveAppId(null)} />
                 }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { AppId, OpenRequest, RecentItem, SuiteApp } from "./apps";
+import ProfileAvatar from "./ProfileAvatar";
 
 type HomeProps = {
   apps: SuiteApp[];
@@ -104,9 +105,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
           />
         </label>
 
-        <div className="hs-avatar" title="Perfil local">
-          V
-        </div>
+        <ProfileAvatar />
       </header>
 
       <div className="hs-body">

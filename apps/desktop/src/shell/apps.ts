@@ -13,6 +13,7 @@ export type ProductCommand = OpenRequest & { nonce: number };
 export type ProductProps = {
   topbarStart?: ReactNode;
   command?: ProductCommand;
+  topbarEnd?: ReactNode;
 };
 
 export type RecentItem = {

@@ -52,9 +52,11 @@ export type WriterProps = {
   topbarStart?: ReactNode;
   // Pedido do desktop: criar um documento ou abrir um documento específico.
   command?: WriterCommand;
+  // Conteúdo que o desktop injeta no fim da barra superior (perfil, etc.).
+  topbarEnd?: ReactNode;
 };
 
-function Writer({ topbarStart, command }: WriterProps) {
+function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
   const [initialWorkspace] = useState(() => loadWorkspace());
 
   const [documents, setDocuments] = useState<DocumentItem[]>(
@@ -226,12 +228,12 @@ function Writer({ topbarStart, command }: WriterProps) {
         className={`hw-sidebar ${sidebarOpen ? "" : "hw-sidebar-collapsed"}`}
       >
         <div className="hw-sidebar-header">
-          <div className="hw-brand-mark">H</div>
+          <div className="hw-brand-mark">W</div>
 
           {sidebarOpen && (
             <div className="hw-brand-copy">
               <span className="hw-brand-name">HALIANZA</span>
-              <span className="hw-brand-product">Office</span>
+              <span className="hw-brand-product">Writer</span>
             </div>
           )}
         </div>
@@ -353,9 +355,7 @@ function Writer({ topbarStart, command }: WriterProps) {
               <span>{saveStatusText}</span>
             </div>
 
-            <div className="hw-profile-avatar" title="Perfil local">
-              V
-            </div>
+            {topbarEnd}
           </div>
         </header>
 
@@ -414,7 +414,7 @@ function Writer({ topbarStart, command }: WriterProps) {
         </div>
 
         <footer className="hw-editor-footer">
-          <span>HALIANZA Office</span>
+          <span>HALIANZA Writer</span>
           <span>Editor de documentos</span>
           <span>{activeDocument.updatedAt}</span>
         </footer>

@@ -1,1 +1,5 @@
-export { default as Writer } from "./Writer";
+export {
+  default as Writer,
+  type WriterCommand,
+  type WriterProps,
+} from "./Writer";

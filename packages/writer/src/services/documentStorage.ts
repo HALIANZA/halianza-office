@@ -3,6 +3,8 @@ export type DocumentItem = {
   title: string;
   content: string;
   updatedAt: string;
+  // Carimbo real (ms desde 1970). Opcional: documentos antigos não o têm.
+  updatedAtMs?: number;
 };
 
 export type DocumentWorkspace = {

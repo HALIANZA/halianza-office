@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import RichTextEditor from "./components/editor/RichTextEditor";
 import {
   loadWorkspace,
@@ -43,7 +43,20 @@ const initialDocuments: DocumentItem[] = [
   },
 ];
 
-function Writer() {
+export type WriterCommand =
+  | { kind: "new"; nonce: number }
+  | { kind: "open"; itemId: string; nonce: number };
+
+export type WriterProps = {
+  // Conteúdo que o desktop injeta no início da barra superior.
+  topbarStart?: ReactNode;
+  // Pedido do desktop: criar um documento ou abrir um documento específico.
+  command?: WriterCommand;
+  // Conteúdo que o desktop injeta no fim da barra superior (perfil, etc.).
+  topbarEnd?: ReactNode;
+};
+
+function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
   const [initialWorkspace] = useState(() => loadWorkspace());
 
   const [documents, setDocuments] = useState<DocumentItem[]>(
@@ -112,6 +125,7 @@ function Writer() {
           ? {
               ...document,
               content,
+              updatedAtMs: Date.now(),
               updatedAt: new Date().toLocaleTimeString("pt-BR", {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -128,7 +142,7 @@ function Writer() {
     setDocuments((currentDocuments) =>
       currentDocuments.map((document) =>
         document.id === id && document.title !== title
-          ? { ...document, title, updatedAt: "Agora" }
+          ? { ...document, title, updatedAt: "Agora", updatedAtMs: Date.now() }
           : document,
       ),
     );
@@ -153,6 +167,7 @@ function Writer() {
       title: "Novo documento",
       content: "<h1>Novo documento</h1><p>Comece a escrever...</p>",
       updatedAt: "Agora",
+      updatedAtMs: Date.now(),
     };
 
     setDocuments((currentDocuments) => [...currentDocuments, newDocument]);
@@ -179,6 +194,27 @@ function Writer() {
     markChanged();
   }
 
+  const handledCommandRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!command || handledCommandRef.current === command.nonce) {
+      return;
+    }
+
+    handledCommandRef.current = command.nonce;
+
+    if (command.kind === "new") {
+      createDocument();
+      return;
+    }
+
+    const { itemId } = command;
+
+    if (documents.some((document) => document.id === itemId)) {
+      selectDocument(itemId);
+    }
+  }, [command]);
+
   const saveStatusText = {
     saved: "Salvo localmente",
     pending: "Aguardando salvamento...",
@@ -187,36 +223,38 @@ function Writer() {
   }[saveStatus];
 
   return (
-    <main className="app-shell">
-      <aside className={`sidebar ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
-        <div className="sidebar-header">
-          <div className="brand-mark">H</div>
+    <main className="hw-app-shell">
+      <aside
+        className={`hw-sidebar ${sidebarOpen ? "" : "hw-sidebar-collapsed"}`}
+      >
+        <div className="hw-sidebar-header">
+          <div className="hw-brand-mark">W</div>
 
           {sidebarOpen && (
-            <div className="brand-copy">
-              <span className="brand-name">HALIANZA</span>
-              <span className="brand-product">Office</span>
+            <div className="hw-brand-copy">
+              <span className="hw-brand-name">HALIANZA</span>
+              <span className="hw-brand-product">Writer</span>
             </div>
           )}
         </div>
 
-        <div className="workspace-label">
+        <div className="hw-workspace-label">
           {sidebarOpen && <span>ESPAÇO DE TRABALHO</span>}
         </div>
 
         <button
-          className="create-document-button"
+          className="hw-create-document-button"
           onClick={createDocument}
           title="Criar documento"
         >
-          <span className="button-icon">+</span>
+          <span className="hw-button-icon">+</span>
           {sidebarOpen && <span>Novo documento</span>}
         </button>
 
         {sidebarOpen && (
           <>
-            <div className="search-container">
-              <span className="search-icon">⌕</span>
+            <div className="hw-search-container">
+              <span className="hw-search-icon">⌕</span>
 
               <input
                 type="search"
@@ -227,33 +265,35 @@ function Writer() {
               />
             </div>
 
-            <div className="documents-heading">
+            <div className="hw-documents-heading">
               <span>SEUS DOCUMENTOS</span>
-              <span className="document-count">{filteredDocuments.length}</span>
+              <span className="hw-document-count">
+                {filteredDocuments.length}
+              </span>
             </div>
 
-            <nav className="document-list" aria-label="Documentos">
+            <nav className="hw-document-list" aria-label="Documentos">
               {filteredDocuments.map((document) => (
                 <div
                   key={document.id}
-                  className={`document-item ${
+                  className={`hw-document-item ${
                     document.id === activeDocumentId
-                      ? "document-item-active"
+                      ? "hw-document-item-active"
                       : ""
                   }`}
                 >
                   <button
-                    className="document-select"
+                    className="hw-document-select"
                     onClick={() => selectDocument(document.id)}
                     title={document.title}
                   >
-                    <span className="document-icon">▤</span>
-                    <span className="document-title">{document.title}</span>
+                    <span className="hw-document-icon">▤</span>
+                    <span className="hw-document-title">{document.title}</span>
                   </button>
 
                   {documents.length > 1 && (
                     <button
-                      className="document-delete"
+                      className="hw-document-delete"
                       onClick={() => deleteDocument(document.id)}
                       title={`Excluir ${document.title}`}
                       aria-label={`Excluir ${document.title}`}
@@ -265,23 +305,24 @@ function Writer() {
               ))}
 
               {filteredDocuments.length === 0 && (
-                <p className="empty-search">Nenhum documento encontrado.</p>
+                <p className="hw-empty-search">Nenhum documento encontrado.</p>
               )}
             </nav>
           </>
         )}
 
-        <div className="sidebar-footer">
-          <div className="status-indicator" />
+        <div className="hw-sidebar-footer">
+          <div className="hw-status-indicator" />
           {sidebarOpen && <span>Espaço local</span>}
         </div>
       </aside>
 
-      <section className="main-panel">
-        <header className="topbar">
-          <div className="topbar-left">
+      <section className="hw-main-panel">
+        <header className="hw-topbar">
+          <div className="hw-topbar-left">
+            {topbarStart}
             <button
-              className="icon-button sidebar-toggle"
+              className="hw-icon-button hw-sidebar-toggle"
               onClick={() => setSidebarOpen((open) => !open)}
               title={sidebarOpen ? "Recolher menu" : "Expandir menu"}
               aria-label={sidebarOpen ? "Recolher menu" : "Expandir menu"}
@@ -289,17 +330,19 @@ function Writer() {
               ☰
             </button>
 
-            <div className="breadcrumb">
-              <span className="breadcrumb-muted">Documentos</span>
-              <span className="breadcrumb-separator">/</span>
-              <span className="breadcrumb-current">{activeDocument.title}</span>
+            <div className="hw-breadcrumb">
+              <span className="hw-breadcrumb-muted">Documentos</span>
+              <span className="hw-breadcrumb-separator">/</span>
+              <span className="hw-breadcrumb-current">
+                {activeDocument.title}
+              </span>
             </div>
           </div>
 
-          <div className="topbar-right">
-            <div className="save-status" title={saveStatusText}>
+          <div className="hw-topbar-right">
+            <div className="hw-save-status" title={saveStatusText}>
               <span
-                className="save-status-dot"
+                className="hw-save-status-dot"
                 style={{
                   background:
                     saveStatus === "error"
@@ -312,19 +355,17 @@ function Writer() {
               <span>{saveStatusText}</span>
             </div>
 
-            <div className="profile-avatar" title="Perfil local">
-              V
-            </div>
+            {topbarEnd}
           </div>
         </header>
 
-        <nav className="ribbon-tabs" aria-label="Faixa de opções">
+        <nav className="hw-ribbon-tabs" aria-label="Faixa de opções">
           {ribbonTabs.map((tab) => (
             <button
               key={tab}
               type="button"
-              className={`ribbon-tab ${
-                activeRibbonTab === tab ? "ribbon-tab-active" : ""
+              className={`hw-ribbon-tab ${
+                activeRibbonTab === tab ? "hw-ribbon-tab-active" : ""
               }`}
               aria-current={activeRibbonTab === tab ? "page" : undefined}
               onClick={() => setActiveRibbonTab(tab)}
@@ -335,12 +376,12 @@ function Writer() {
         </nav>
 
         {activeRibbonTab === "Início" ? (
-          <div className="editor-toolbar">
-            <div className="toolbar-document-info">
-              <span className="toolbar-document-icon">▤</span>
+          <div className="hw-editor-toolbar">
+            <div className="hw-toolbar-document-info">
+              <span className="hw-toolbar-document-icon">▤</span>
 
               <input
-                className="document-name-input"
+                className="hw-document-name-input"
                 value={activeDocument.title}
                 onChange={(event) =>
                   renameDocument(activeDocument.id, event.target.value)
@@ -350,20 +391,20 @@ function Writer() {
               />
             </div>
 
-            <div className="toolbar-divider" />
+            <div className="hw-toolbar-divider" />
 
-            <span className="toolbar-hint">Editor de documentos</span>
+            <span className="hw-toolbar-hint">Editor de documentos</span>
           </div>
         ) : (
-          <div className="ribbon-placeholder" role="status">
+          <div className="hw-ribbon-placeholder" role="status">
             <strong>{activeRibbonTab}</strong>
             <span>Esta seção está em desenvolvimento.</span>
           </div>
         )}
 
-        <div className="editor-scroll-area">
-          <article className="document-page">
-            <div className="document-page-content">
+        <div className="hw-editor-scroll-area">
+          <article className="hw-document-page">
+            <div className="hw-document-page-content">
               <RichTextEditor
                 content={activeDocument.content}
                 onChange={updateDocumentContent}
@@ -372,8 +413,8 @@ function Writer() {
           </article>
         </div>
 
-        <footer className="editor-footer">
-          <span>HALIANZA Office</span>
+        <footer className="hw-editor-footer">
+          <span>HALIANZA Writer</span>
           <span>Editor de documentos</span>
           <span>{activeDocument.updatedAt}</span>
         </footer>

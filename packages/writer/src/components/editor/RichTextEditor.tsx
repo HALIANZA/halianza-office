@@ -79,7 +79,7 @@ export default function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class: "rich-text-content",
+        class: "hw-rich-text-content",
         "aria-label": "Conteúdo do documento",
         spellcheck: "true",
       },
@@ -99,19 +99,19 @@ export default function RichTextEditor({
   }, [editor, content]);
 
   if (!editor) {
-    return <div className="rich-text-loading">Preparando editor...</div>;
+    return <div className="hw-rich-text-loading">Preparando editor...</div>;
   }
 
   return (
-    <div className="rich-text-editor">
+    <div className="hw-rich-text-editor">
       <div
-        className="rich-text-toolbar"
+        className="hw-rich-text-toolbar"
         role="toolbar"
         aria-label="Página Inicial — formatação do documento"
       >
-        <div className="toolbar-group">
-          <label className="toolbar-select-label">
-            <span className="sr-only">Família da fonte</span>
+        <div className="hw-toolbar-group">
+          <label className="hw-toolbar-select-label">
+            <span className="hw-sr-only">Família da fonte</span>
             <select
               aria-label="Família da fonte"
               title="Família da fonte"
@@ -134,8 +134,8 @@ export default function RichTextEditor({
             </select>
           </label>
 
-          <label className="toolbar-select-label font-size-select">
-            <span className="sr-only">Tamanho da fonte</span>
+          <label className="hw-toolbar-select-label hw-font-size-select">
+            <span className="hw-sr-only">Tamanho da fonte</span>
             <select
               aria-label="Tamanho da fonte"
               title="Tamanho da fonte"
@@ -159,9 +159,9 @@ export default function RichTextEditor({
           </label>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group">
+        <div className="hw-toolbar-group">
           <button
             type="button"
             className={editor.isActive("bold") ? "active" : ""}
@@ -229,11 +229,11 @@ export default function RichTextEditor({
           </button>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group color-controls">
-          <label className="toolbar-color-control" title="Cor da fonte">
-            <span className="color-control-symbol">A</span>
+        <div className="hw-toolbar-group hw-color-controls">
+          <label className="hw-toolbar-color-control" title="Cor da fonte">
+            <span className="hw-color-control-symbol">A</span>
             <input
               type="color"
               aria-label="Cor da fonte"
@@ -245,10 +245,10 @@ export default function RichTextEditor({
           </label>
 
           <label
-            className="toolbar-color-control highlight-control"
+            className="hw-toolbar-color-control hw-highlight-control"
             title="Cor de realce"
           >
-            <span className="color-control-symbol">▰</span>
+            <span className="hw-color-control-symbol">▰</span>
             <input
               type="color"
               aria-label="Cor de realce do texto"
@@ -284,9 +284,9 @@ export default function RichTextEditor({
           </button>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group">
+        <div className="hw-toolbar-group">
           <button
             type="button"
             className={editor.isActive("heading", { level: 1 }) ? "active" : ""}
@@ -314,9 +314,9 @@ export default function RichTextEditor({
           </button>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group alignment-controls">
+        <div className="hw-toolbar-group hw-alignment-controls">
           <button
             type="button"
             className={editor.isActive({ textAlign: "left" }) ? "active" : ""}
@@ -364,9 +364,9 @@ export default function RichTextEditor({
           </button>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group">
+        <div className="hw-toolbar-group">
           <button
             type="button"
             className={editor.isActive("bulletList") ? "active" : ""}
@@ -401,9 +401,9 @@ export default function RichTextEditor({
           </button>
         </div>
 
-        <span className="rich-text-toolbar-divider" />
+        <span className="hw-rich-text-toolbar-divider" />
 
-        <div className="toolbar-group">
+        <div className="hw-toolbar-group">
           <button
             type="button"
             onMouseDown={(event) => event.preventDefault()}
@@ -428,7 +428,7 @@ export default function RichTextEditor({
         </div>
       </div>
 
-      <EditorContent editor={editor} className="rich-text-canvas" />
+      <EditorContent editor={editor} className="hw-rich-text-canvas" />
     </div>
   );
 }

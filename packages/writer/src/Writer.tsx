@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import RichTextEditor from "./components/editor/RichTextEditor";
 import {
   loadWorkspace,
@@ -43,7 +43,12 @@ const initialDocuments: DocumentItem[] = [
   },
 ];
 
-function Writer() {
+export type WriterProps = {
+  // Conteúdo que o desktop injeta no início da barra superior.
+  topbarStart?: ReactNode;
+};
+
+function Writer({ topbarStart }: WriterProps) {
   const [initialWorkspace] = useState(() => loadWorkspace());
 
   const [documents, setDocuments] = useState<DocumentItem[]>(
@@ -284,6 +289,7 @@ function Writer() {
       <section className="hw-main-panel">
         <header className="hw-topbar">
           <div className="hw-topbar-left">
+            {topbarStart}
             <button
               className="hw-icon-button hw-sidebar-toggle"
               onClick={() => setSidebarOpen((open) => !open)}

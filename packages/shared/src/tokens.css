@@ -99,3 +99,24 @@
   --hz-shadow-raised: 0 4px 14px rgb(0 0 0 / 35%);
   --hz-shadow-overlay: 0 12px 32px rgb(0 0 0 / 50%);
 }
+
+/* Documento: a página e o seu conteúdo não mudam de cor com o tema da
+   interface. Só o papel fica um pouco mais suave no tema escuro. */
+:root {
+  --hz-workspace: #e8eaee; /* (proposto) área ao redor da página */
+  --hz-page: #ffffff;
+  --hz-page-text: #202124;
+  --hz-page-text-secondary: #62656d;
+  --hz-page-border: #d8dadf;
+  --hz-page-subtle: #f3f4f6;
+  --hz-page-rule: #a7adb4; /* prata da marca */
+  --hz-page-link: #2c5ad0; /* (proposto) */
+  --hz-shadow-page: 0 1px 3px rgb(32 33 36 / 8%), 0 4px 14px rgb(32 33 36 / 6%);
+}
+
+:root[data-theme="dark"] {
+  --hz-workspace: #17181b;
+  --hz-page: #f5f5f5;
+  --hz-page-subtle: #e9ebef;
+  --hz-shadow-page: 0 2px 12px rgb(0 0 0 / 45%);
+}

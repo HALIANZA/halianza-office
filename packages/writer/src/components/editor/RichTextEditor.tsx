@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyle, FontFamily, FontSize } from "@tiptap/extension-text-style";
@@ -15,6 +16,8 @@ import TaskItem from "@tiptap/extension-task-item";
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
+  // undefined: barra dentro do editor; null: oculta; elemento: renderiza nele.
+  toolbarSlot?: HTMLElement | null;
 }
 
 const fontFamilies = [
@@ -50,6 +53,7 @@ const fontSizes = [
 export default function RichTextEditor({
   content,
   onChange,
+  toolbarSlot,
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -102,331 +106,335 @@ export default function RichTextEditor({
     return <div className="hw-rich-text-loading">Preparando editor...</div>;
   }
 
+  const toolbar = (
+    <div
+      className="hw-rich-text-toolbar"
+      role="toolbar"
+      aria-label="Página Inicial — formatação do documento"
+    >
+      <div className="hw-toolbar-group">
+        <label className="hw-toolbar-select-label">
+          <span className="hw-sr-only">Família da fonte</span>
+          <select
+            aria-label="Família da fonte"
+            title="Família da fonte"
+            defaultValue=""
+            onChange={(event) => {
+              const value = event.target.value;
+
+              if (value) {
+                editor.chain().focus().setFontFamily(value).run();
+              } else {
+                editor.chain().focus().unsetFontFamily().run();
+              }
+            }}
+          >
+            {fontFamilies.map((font) => (
+              <option key={font.label} value={font.value}>
+                {font.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="hw-toolbar-select-label hw-font-size-select">
+          <span className="hw-sr-only">Tamanho da fonte</span>
+          <select
+            aria-label="Tamanho da fonte"
+            title="Tamanho da fonte"
+            defaultValue=""
+            onChange={(event) => {
+              const value = event.target.value;
+
+              if (value) {
+                editor.chain().focus().setFontSize(value).run();
+              } else {
+                editor.chain().focus().unsetFontSize().run();
+              }
+            }}
+          >
+            {fontSizes.map((size) => (
+              <option key={size.label} value={size.value}>
+                {size.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group">
+        <button
+          type="button"
+          className={editor.isActive("bold") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          aria-label="Negrito"
+          title="Negrito"
+        >
+          <strong>N</strong>
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("italic") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          aria-label="Itálico"
+          title="Itálico"
+        >
+          <em>I</em>
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("underline") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          aria-label="Sublinhado"
+          title="Sublinhado"
+        >
+          <u>S</u>
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("strike") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          aria-label="Tachado"
+          title="Tachado"
+        >
+          <s>T</s>
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("subscript") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleSubscript().run()}
+          aria-label="Subscrito"
+          title="Subscrito"
+        >
+          X<sub>2</sub>
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("superscript") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleSuperscript().run()}
+          aria-label="Sobrescrito"
+          title="Sobrescrito"
+        >
+          X<sup>2</sup>
+        </button>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group hw-color-controls">
+        <label className="hw-toolbar-color-control" title="Cor da fonte">
+          <span className="hw-color-control-symbol">A</span>
+          <input
+            type="color"
+            aria-label="Cor da fonte"
+            defaultValue="#202124"
+            onChange={(event) => {
+              editor.chain().focus().setColor(event.target.value).run();
+            }}
+          />
+        </label>
+
+        <label
+          className="hw-toolbar-color-control hw-highlight-control"
+          title="Cor de realce"
+        >
+          <span className="hw-color-control-symbol">▰</span>
+          <input
+            type="color"
+            aria-label="Cor de realce do texto"
+            defaultValue="#fff2a8"
+            onChange={(event) => {
+              editor
+                .chain()
+                .focus()
+                .toggleHighlight({ color: event.target.value })
+                .run();
+            }}
+          />
+        </label>
+
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().unsetColor().run()}
+          aria-label="Remover cor da fonte"
+          title="Remover cor da fonte"
+        >
+          A↺
+        </button>
+
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().unsetHighlight().run()}
+          aria-label="Remover realce"
+          title="Remover realce"
+        >
+          ▰↺
+        </button>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group">
+        <button
+          type="button"
+          className={editor.isActive("heading", { level: 1 }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          aria-label="Título 1"
+          title="Título 1"
+        >
+          H1
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("heading", { level: 2 }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          aria-label="Título 2"
+          title="Título 2"
+        >
+          H2
+        </button>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group hw-alignment-controls">
+        <button
+          type="button"
+          className={editor.isActive({ textAlign: "left" }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          aria-label="Alinhar à esquerda"
+          title="Alinhar à esquerda"
+        >
+          ☰
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive({ textAlign: "center" }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          aria-label="Centralizar"
+          title="Centralizar"
+        >
+          ≡
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive({ textAlign: "right" }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          aria-label="Alinhar à direita"
+          title="Alinhar à direita"
+        >
+          ☷
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive({ textAlign: "justify" }) ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          aria-label="Justificar"
+          title="Justificar"
+        >
+          ☰
+        </button>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group">
+        <button
+          type="button"
+          className={editor.isActive("bulletList") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          aria-label="Lista com marcadores"
+          title="Lista com marcadores"
+        >
+          • Lista
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("taskList") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+          aria-label="Lista de tarefas"
+          title="Lista de tarefas"
+        >
+          ☑ Tarefas
+        </button>
+
+        <button
+          type="button"
+          className={editor.isActive("orderedList") ? "active" : ""}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          aria-label="Lista numerada"
+          title="Lista numerada"
+        >
+          1. Lista
+        </button>
+      </div>
+
+      <span className="hw-rich-text-toolbar-divider" />
+
+      <div className="hw-toolbar-group">
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          aria-label="Desfazer"
+          title="Desfazer"
+        >
+          ↶
+        </button>
+
+        <button
+          type="button"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          aria-label="Refazer"
+          title="Refazer"
+        >
+          ↷
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="hw-rich-text-editor">
-      <div
-        className="hw-rich-text-toolbar"
-        role="toolbar"
-        aria-label="Página Inicial — formatação do documento"
-      >
-        <div className="hw-toolbar-group">
-          <label className="hw-toolbar-select-label">
-            <span className="hw-sr-only">Família da fonte</span>
-            <select
-              aria-label="Família da fonte"
-              title="Família da fonte"
-              defaultValue=""
-              onChange={(event) => {
-                const value = event.target.value;
-
-                if (value) {
-                  editor.chain().focus().setFontFamily(value).run();
-                } else {
-                  editor.chain().focus().unsetFontFamily().run();
-                }
-              }}
-            >
-              {fontFamilies.map((font) => (
-                <option key={font.label} value={font.value}>
-                  {font.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="hw-toolbar-select-label hw-font-size-select">
-            <span className="hw-sr-only">Tamanho da fonte</span>
-            <select
-              aria-label="Tamanho da fonte"
-              title="Tamanho da fonte"
-              defaultValue=""
-              onChange={(event) => {
-                const value = event.target.value;
-
-                if (value) {
-                  editor.chain().focus().setFontSize(value).run();
-                } else {
-                  editor.chain().focus().unsetFontSize().run();
-                }
-              }}
-            >
-              {fontSizes.map((size) => (
-                <option key={size.label} value={size.value}>
-                  {size.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group">
-          <button
-            type="button"
-            className={editor.isActive("bold") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            aria-label="Negrito"
-            title="Negrito"
-          >
-            <strong>N</strong>
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("italic") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            aria-label="Itálico"
-            title="Itálico"
-          >
-            <em>I</em>
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("underline") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            aria-label="Sublinhado"
-            title="Sublinhado"
-          >
-            <u>S</u>
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("strike") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            aria-label="Tachado"
-            title="Tachado"
-          >
-            <s>T</s>
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("subscript") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleSubscript().run()}
-            aria-label="Subscrito"
-            title="Subscrito"
-          >
-            X<sub>2</sub>
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("superscript") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleSuperscript().run()}
-            aria-label="Sobrescrito"
-            title="Sobrescrito"
-          >
-            X<sup>2</sup>
-          </button>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group hw-color-controls">
-          <label className="hw-toolbar-color-control" title="Cor da fonte">
-            <span className="hw-color-control-symbol">A</span>
-            <input
-              type="color"
-              aria-label="Cor da fonte"
-              defaultValue="#26231f"
-              onChange={(event) => {
-                editor.chain().focus().setColor(event.target.value).run();
-              }}
-            />
-          </label>
-
-          <label
-            className="hw-toolbar-color-control hw-highlight-control"
-            title="Cor de realce"
-          >
-            <span className="hw-color-control-symbol">▰</span>
-            <input
-              type="color"
-              aria-label="Cor de realce do texto"
-              defaultValue="#fff2a8"
-              onChange={(event) => {
-                editor
-                  .chain()
-                  .focus()
-                  .toggleHighlight({ color: event.target.value })
-                  .run();
-              }}
-            />
-          </label>
-
-          <button
-            type="button"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().unsetColor().run()}
-            aria-label="Remover cor da fonte"
-            title="Remover cor da fonte"
-          >
-            A↺
-          </button>
-
-          <button
-            type="button"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().unsetHighlight().run()}
-            aria-label="Remover realce"
-            title="Remover realce"
-          >
-            ▰↺
-          </button>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group">
-          <button
-            type="button"
-            className={editor.isActive("heading", { level: 1 }) ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            aria-label="Título 1"
-            title="Título 1"
-          >
-            H1
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("heading", { level: 2 }) ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
-            aria-label="Título 2"
-            title="Título 2"
-          >
-            H2
-          </button>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group hw-alignment-controls">
-          <button
-            type="button"
-            className={editor.isActive({ textAlign: "left" }) ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            aria-label="Alinhar à esquerda"
-            title="Alinhar à esquerda"
-          >
-            ☰
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive({ textAlign: "center" }) ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("center").run()}
-            aria-label="Centralizar"
-            title="Centralizar"
-          >
-            ≡
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive({ textAlign: "right" }) ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("right").run()}
-            aria-label="Alinhar à direita"
-            title="Alinhar à direita"
-          >
-            ☷
-          </button>
-
-          <button
-            type="button"
-            className={
-              editor.isActive({ textAlign: "justify" }) ? "active" : ""
-            }
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-            aria-label="Justificar"
-            title="Justificar"
-          >
-            ☰
-          </button>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group">
-          <button
-            type="button"
-            className={editor.isActive("bulletList") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            aria-label="Lista com marcadores"
-            title="Lista com marcadores"
-          >
-            • Lista
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("taskList") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
-            aria-label="Lista de tarefas"
-            title="Lista de tarefas"
-          >
-            ☑ Tarefas
-          </button>
-
-          <button
-            type="button"
-            className={editor.isActive("orderedList") ? "active" : ""}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            aria-label="Lista numerada"
-            title="Lista numerada"
-          >
-            1. Lista
-          </button>
-        </div>
-
-        <span className="hw-rich-text-toolbar-divider" />
-
-        <div className="hw-toolbar-group">
-          <button
-            type="button"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editor.can().undo()}
-            aria-label="Desfazer"
-            title="Desfazer"
-          >
-            ↶
-          </button>
-
-          <button
-            type="button"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editor.can().redo()}
-            aria-label="Refazer"
-            title="Refazer"
-          >
-            ↷
-          </button>
-        </div>
-      </div>
+      {toolbarSlot === undefined
+        ? toolbar
+        : toolbarSlot && createPortal(toolbar, toolbarSlot)}
 
       <EditorContent editor={editor} className="hw-rich-text-canvas" />
     </div>

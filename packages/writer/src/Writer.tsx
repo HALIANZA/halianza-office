@@ -76,6 +76,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
   >("saved");
 
   const [activeRibbonTab, setActiveRibbonTab] = useState<RibbonTab>("Início");
+  const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
 
   const activeDocument =
     documents.find((document) => document.id === activeDocumentId) ??
@@ -346,10 +347,10 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
                 style={{
                   background:
                     saveStatus === "error"
-                      ? "#c64747"
+                      ? "var(--hz-error)"
                       : saveStatus === "saved"
-                        ? "#65a77b"
-                        : "#c49a52",
+                        ? "var(--hz-success)"
+                        : "var(--hz-warning)",
                 }}
               />
               <span>{saveStatusText}</span>
@@ -376,25 +377,28 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
         </nav>
 
         {activeRibbonTab === "Início" ? (
-          <div className="hw-editor-toolbar">
-            <div className="hw-toolbar-document-info">
-              <span className="hw-toolbar-document-icon">▤</span>
+          <>
+            <div className="hw-editor-toolbar">
+              <div className="hw-toolbar-document-info">
+                <span className="hw-toolbar-document-icon">▤</span>
 
-              <input
-                className="hw-document-name-input"
-                value={activeDocument.title}
-                onChange={(event) =>
-                  renameDocument(activeDocument.id, event.target.value)
-                }
-                aria-label="Nome do documento"
-                spellCheck={false}
-              />
+                <input
+                  className="hw-document-name-input"
+                  value={activeDocument.title}
+                  onChange={(event) =>
+                    renameDocument(activeDocument.id, event.target.value)
+                  }
+                  aria-label="Nome do documento"
+                  spellCheck={false}
+                />
+              </div>
+
+              <div className="hw-toolbar-divider" />
+
+              <span className="hw-toolbar-hint">Editor de documentos</span>
             </div>
-
-            <div className="hw-toolbar-divider" />
-
-            <span className="hw-toolbar-hint">Editor de documentos</span>
-          </div>
+            <div className="hw-ribbon-commands" ref={setToolbarSlot} />
+          </>
         ) : (
           <div className="hw-ribbon-placeholder" role="status">
             <strong>{activeRibbonTab}</strong>
@@ -408,6 +412,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
               <RichTextEditor
                 content={activeDocument.content}
                 onChange={updateDocumentContent}
+                toolbarSlot={toolbarSlot}
               />
             </div>
           </article>

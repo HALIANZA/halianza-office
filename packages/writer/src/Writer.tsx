@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import RichTextEditor from "./components/editor/RichTextEditor";
 import {
   loadWorkspace,
@@ -43,12 +43,18 @@ const initialDocuments: DocumentItem[] = [
   },
 ];
 
+export type WriterCommand =
+  | { kind: "new"; nonce: number }
+  | { kind: "open"; itemId: string; nonce: number };
+
 export type WriterProps = {
   // Conteúdo que o desktop injeta no início da barra superior.
   topbarStart?: ReactNode;
+  // Pedido do desktop: criar um documento ou abrir um documento específico.
+  command?: WriterCommand;
 };
 
-function Writer({ topbarStart }: WriterProps) {
+function Writer({ topbarStart, command }: WriterProps) {
   const [initialWorkspace] = useState(() => loadWorkspace());
 
   const [documents, setDocuments] = useState<DocumentItem[]>(
@@ -117,6 +123,7 @@ function Writer({ topbarStart }: WriterProps) {
           ? {
               ...document,
               content,
+              updatedAtMs: Date.now(),
               updatedAt: new Date().toLocaleTimeString("pt-BR", {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -133,7 +140,7 @@ function Writer({ topbarStart }: WriterProps) {
     setDocuments((currentDocuments) =>
       currentDocuments.map((document) =>
         document.id === id && document.title !== title
-          ? { ...document, title, updatedAt: "Agora" }
+          ? { ...document, title, updatedAt: "Agora", updatedAtMs: Date.now() }
           : document,
       ),
     );
@@ -158,6 +165,7 @@ function Writer({ topbarStart }: WriterProps) {
       title: "Novo documento",
       content: "<h1>Novo documento</h1><p>Comece a escrever...</p>",
       updatedAt: "Agora",
+      updatedAtMs: Date.now(),
     };
 
     setDocuments((currentDocuments) => [...currentDocuments, newDocument]);
@@ -183,6 +191,27 @@ function Writer({ topbarStart }: WriterProps) {
 
     markChanged();
   }
+
+  const handledCommandRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!command || handledCommandRef.current === command.nonce) {
+      return;
+    }
+
+    handledCommandRef.current = command.nonce;
+
+    if (command.kind === "new") {
+      createDocument();
+      return;
+    }
+
+    const { itemId } = command;
+
+    if (documents.some((document) => document.id === itemId)) {
+      selectDocument(itemId);
+    }
+  }, [command]);
 
   const saveStatusText = {
     saved: "Salvo localmente",

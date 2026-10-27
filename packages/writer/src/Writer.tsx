@@ -1,30 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import RichTextEditor from "./components/editor/RichTextEditor";
+import { useWriterEditor } from "./editor/useWriterEditor";
+import Ribbon from "./ribbon/Ribbon";
 import {
   loadWorkspace,
   saveWorkspace,
   type DocumentItem,
 } from "./services/documentStorage";
 import "./Writer.css";
-
-type RibbonTab =
-  | "Arquivo"
-  | "Início"
-  | "Inserir"
-  | "Layout"
-  | "Referências"
-  | "Revisão"
-  | "Exibir";
-
-const ribbonTabs: RibbonTab[] = [
-  "Arquivo",
-  "Início",
-  "Inserir",
-  "Layout",
-  "Referências",
-  "Revisão",
-  "Exibir",
-];
 
 const initialDocuments: DocumentItem[] = [
   {
@@ -74,9 +57,6 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
   const [saveStatus, setSaveStatus] = useState<
     "saved" | "pending" | "saving" | "error"
   >("saved");
-
-  const [activeRibbonTab, setActiveRibbonTab] = useState<RibbonTab>("Início");
-  const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
 
   const activeDocument =
     documents.find((document) => document.id === activeDocumentId) ??
@@ -173,7 +153,6 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
 
     setDocuments((currentDocuments) => [...currentDocuments, newDocument]);
     setActiveDocumentId(id);
-    setActiveRibbonTab("Início");
     markChanged();
   }
 
@@ -194,6 +173,8 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
 
     markChanged();
   }
+
+  const editor = useWriterEditor(activeDocument.content, updateDocumentContent);
 
   const handledCommandRef = useRef<number | null>(null);
 
@@ -360,60 +341,32 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
           </div>
         </header>
 
-        <nav className="hw-ribbon-tabs" aria-label="Faixa de opções">
-          {ribbonTabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={`hw-ribbon-tab ${
-                activeRibbonTab === tab ? "hw-ribbon-tab-active" : ""
-              }`}
-              aria-current={activeRibbonTab === tab ? "page" : undefined}
-              onClick={() => setActiveRibbonTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </nav>
+        <div className="hw-editor-toolbar">
+          <div className="hw-toolbar-document-info">
+            <span className="hw-toolbar-document-icon">▤</span>
 
-        {activeRibbonTab === "Início" ? (
-          <>
-            <div className="hw-editor-toolbar">
-              <div className="hw-toolbar-document-info">
-                <span className="hw-toolbar-document-icon">▤</span>
-
-                <input
-                  className="hw-document-name-input"
-                  value={activeDocument.title}
-                  onChange={(event) =>
-                    renameDocument(activeDocument.id, event.target.value)
-                  }
-                  aria-label="Nome do documento"
-                  spellCheck={false}
-                />
-              </div>
-
-              <div className="hw-toolbar-divider" />
-
-              <span className="hw-toolbar-hint">Editor de documentos</span>
-            </div>
-            <div className="hw-ribbon-commands" ref={setToolbarSlot} />
-          </>
-        ) : (
-          <div className="hw-ribbon-placeholder" role="status">
-            <strong>{activeRibbonTab}</strong>
-            <span>Esta seção está em desenvolvimento.</span>
+            <input
+              className="hw-document-name-input"
+              value={activeDocument.title}
+              onChange={(event) =>
+                renameDocument(activeDocument.id, event.target.value)
+              }
+              aria-label="Nome do documento"
+              spellCheck={false}
+            />
           </div>
-        )}
+
+          <div className="hw-toolbar-divider" />
+
+          <span className="hw-toolbar-hint">Editor de documentos</span>
+        </div>
+
+        <Ribbon editor={editor} />
 
         <div className="hw-editor-scroll-area">
           <article className="hw-document-page">
             <div className="hw-document-page-content">
-              <RichTextEditor
-                content={activeDocument.content}
-                onChange={updateDocumentContent}
-                toolbarSlot={toolbarSlot}
-              />
+              <RichTextEditor editor={editor} />
             </div>
           </article>
         </div>

@@ -855,3 +855,12 @@
   color: var(--hz-on-app);
   background: var(--hz-app-writer);
 }
+
+/* Título 4 (disponível na galeria de estilos). */
+.hw-document-page-content .tiptap h4 {
+  margin: 20px 0 8px;
+  color: var(--hz-page-text);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}

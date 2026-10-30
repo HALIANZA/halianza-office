@@ -119,9 +119,21 @@ type HomeTabProps = {
   editor: Editor | null;
   snap: RibbonSnapshot;
   notify: (message: string) => void;
+  painter: {
+    mode: "off" | "once" | "sticky";
+    toggle: () => void;
+    lock: () => void;
+  };
+  onFind: (mode: "find" | "replace") => void;
 };
 
-export default function HomeTab({ editor, snap, notify }: HomeTabProps) {
+export default function HomeTab({
+  editor,
+  snap,
+  notify,
+  painter,
+  onFind,
+}: HomeTabProps) {
   const off = editor === null;
 
   // Executa uma ação só quando o editor existe.
@@ -210,7 +222,10 @@ export default function HomeTab({ editor, snap, notify }: HomeTabProps) {
             icon={FormatPainterIcon}
             tip={TIPS.painter}
             label="Pincel"
-            planned="Fase 1b"
+            active={painter.mode !== "off"}
+            disabled={off}
+            onClick={painter.toggle}
+            onDoubleClick={painter.lock}
           />
         </Stack>
       </RibbonGroup>
@@ -605,13 +620,15 @@ export default function HomeTab({ editor, snap, notify }: HomeTabProps) {
             icon={FindIcon}
             tip={TIPS.find}
             label="Localizar"
-            planned="Fase 1b"
+            disabled={off}
+            onClick={() => onFind("find")}
           />
           <RibbonButton
             icon={ReplaceIcon}
             tip={TIPS.replace}
             label="Substituir"
-            planned="Fase 1b"
+            disabled={off}
+            onClick={() => onFind("replace")}
           />
           <RibbonButton
             icon={SelectAllIcon}

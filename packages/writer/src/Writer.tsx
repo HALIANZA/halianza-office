@@ -3,6 +3,13 @@ import RichTextEditor from "./components/editor/RichTextEditor";
 import { useWriterEditor } from "./editor/useWriterEditor";
 import Ribbon from "./ribbon/Ribbon";
 import {
+  AddIcon,
+  DismissIcon,
+  DocumentIcon,
+  MenuIcon,
+  SearchIcon,
+} from "@halianza/shared/icons";
+import {
   loadWorkspace,
   saveWorkspace,
   type DocumentItem,
@@ -229,14 +236,14 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
           onClick={createDocument}
           title="Criar documento"
         >
-          <span className="hw-button-icon">+</span>
+          <AddIcon className="hw-button-icon" />
           {sidebarOpen && <span>Novo documento</span>}
         </button>
 
         {sidebarOpen && (
           <>
             <div className="hw-search-container">
-              <span className="hw-search-icon">⌕</span>
+              <SearchIcon className="hw-search-icon" />
 
               <input
                 type="search"
@@ -269,7 +276,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
                     onClick={() => selectDocument(document.id)}
                     title={document.title}
                   >
-                    <span className="hw-document-icon">▤</span>
+                    <DocumentIcon className="hw-document-icon" />
                     <span className="hw-document-title">{document.title}</span>
                   </button>
 
@@ -280,7 +287,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
                       title={`Excluir ${document.title}`}
                       aria-label={`Excluir ${document.title}`}
                     >
-                      ×
+                      <DismissIcon />
                     </button>
                   )}
                 </div>
@@ -309,7 +316,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
               title={sidebarOpen ? "Recolher menu" : "Expandir menu"}
               aria-label={sidebarOpen ? "Recolher menu" : "Expandir menu"}
             >
-              ☰
+              <MenuIcon />
             </button>
 
             <div className="hw-breadcrumb">
@@ -343,7 +350,7 @@ function Writer({ topbarStart, topbarEnd, command }: WriterProps) {
 
         <div className="hw-editor-toolbar">
           <div className="hw-toolbar-document-info">
-            <span className="hw-toolbar-document-icon">▤</span>
+            <DocumentIcon className="hw-toolbar-document-icon" />
 
             <input
               className="hw-document-name-input"

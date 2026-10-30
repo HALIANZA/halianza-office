@@ -10,6 +10,7 @@ import Superscript from "@tiptap/extension-superscript";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import { ParagraphFormat } from "./ParagraphFormat";
+import { FindAndReplace } from "@tiptap/extension-find-and-replace";
 
 export function useWriterEditor(
   content: string,
@@ -30,6 +31,7 @@ export function useWriterEditor(
       Subscript,
       Superscript,
       ParagraphFormat,
+      FindAndReplace.configure({ searchDebounceMs: 0, injectCSS: false }),
     ],
     content,
     immediatelyRender: false,

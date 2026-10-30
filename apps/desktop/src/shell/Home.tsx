@@ -1,5 +1,12 @@
 import { useMemo, useState } from "react";
-import type { AppId, OpenRequest, RecentItem, SuiteApp } from "./apps";
+import { AddIcon, HomeIcon, SearchIcon } from "@halianza/shared/icons";
+import type {
+  AppId,
+  IconComponent,
+  OpenRequest,
+  RecentItem,
+  SuiteApp,
+} from "./apps";
 import ProfileMenu from "./ProfileMenu";
 
 type HomeProps = {
@@ -80,8 +87,8 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
       )
     : recentItems;
 
-  function glyphOf(id: AppId): string {
-    return apps.find((app) => app.id === id)?.glyph ?? "";
+  function iconOf(id: AppId): IconComponent | undefined {
+    return apps.find((app) => app.id === id)?.icon;
   }
 
   return (
@@ -94,7 +101,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
 
         <label className="hs-search">
           <span className="hs-search-icon" aria-hidden="true">
-            ⌕
+            <SearchIcon />
           </span>
           <input
             type="search"
@@ -116,7 +123,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
             aria-current="page"
           >
             <span className="hs-rail-glyph" aria-hidden="true">
-              ⌂
+              <HomeIcon />
             </span>
             <span className="hs-rail-label">Início</span>
           </button>
@@ -125,6 +132,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
 
           {apps.map((app) => {
             const available = app.component !== undefined;
+            const AppIcon = app.icon;
 
             return (
               <button
@@ -144,7 +152,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
                   data-app={app.id}
                   aria-hidden="true"
                 >
-                  {app.glyph}
+                  <AppIcon />
                 </span>
                 <span className="hs-rail-label">{app.name}</span>
               </button>
@@ -172,7 +180,7 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
                     onClick={() => onOpenApp(app.id, { kind: "new" })}
                   >
                     <span className="hs-create-plus" aria-hidden="true">
-                      +
+                      <AddIcon />
                     </span>
                     <span>{app.createLabel}</span>
                   </button>
@@ -187,36 +195,40 @@ export default function Home({ apps, onOpenApp }: HomeProps) {
 
             {visibleItems.length > 0 ? (
               <div className="hs-recent-grid">
-                {visibleItems.map((item) => (
-                  <button
-                    key={`${item.appId}:${item.id}`}
-                    type="button"
-                    className="hs-recent-card"
-                    onClick={() =>
-                      onOpenApp(item.appId, { kind: "open", itemId: item.id })
-                    }
-                  >
-                    <span className="hs-recent-preview">
-                      {item.preview || "Documento vazio"}
-                    </span>
+                {visibleItems.map((item) => {
+                  const ItemIcon = iconOf(item.appId);
 
-                    <span className="hs-recent-meta">
-                      <span
-                        className="hs-app-glyph"
-                        data-app={item.appId}
-                        aria-hidden="true"
-                      >
-                        {glyphOf(item.appId)}
+                  return (
+                    <button
+                      key={`${item.appId}:${item.id}`}
+                      type="button"
+                      className="hs-recent-card"
+                      onClick={() =>
+                        onOpenApp(item.appId, { kind: "open", itemId: item.id })
+                      }
+                    >
+                      <span className="hs-recent-preview">
+                        {item.preview || "Documento vazio"}
                       </span>
-                      <span className="hs-recent-text">
-                        <span className="hs-recent-title">{item.title}</span>
-                        <span className="hs-recent-date">
-                          {formatRelative(item.updatedAtMs)}
+
+                      <span className="hs-recent-meta">
+                        <span
+                          className="hs-app-glyph"
+                          data-app={item.appId}
+                          aria-hidden="true"
+                        >
+                          {ItemIcon && <ItemIcon />}
+                        </span>
+                        <span className="hs-recent-text">
+                          <span className="hs-recent-title">{item.title}</span>
+                          <span className="hs-recent-date">
+                            {formatRelative(item.updatedAtMs)}
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <p className="hs-empty">

@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.344",
+    "@halianza/shared": "*",
     "@tiptap/core": "^3.32.0",
     "@tiptap/extension-color": "^3.32.0",
+    "@tiptap/extension-find-and-replace": "^3.32.0",
     "@tiptap/extension-highlight": "^3.32.0",
     "@tiptap/extension-subscript": "^3.32.0",
     "@tiptap/extension-superscript": "^3.32.0",

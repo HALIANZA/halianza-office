@@ -29,7 +29,8 @@ export const TIPS = {
   },
   painter: {
     label: "Pincel de formatação",
-    description: "Copia a formatação de um trecho e a aplica a outro.",
+    description:
+      "Copia a formatação de caractere de um trecho e a aplica a outro. Clique duas vezes para aplicar várias vezes; Esc cancela.",
   },
   fontFamily: {
     label: "Fonte",

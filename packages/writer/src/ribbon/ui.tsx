@@ -96,6 +96,7 @@ type RibbonButtonProps = {
   hasMenu?: boolean;
   expanded?: boolean;
   onClick?: () => void;
+  onDoubleClick?: () => void;
   buttonRef?: Ref<HTMLButtonElement>;
 };
 
@@ -110,6 +111,7 @@ export function RibbonButton({
   hasMenu,
   expanded,
   onClick,
+  onDoubleClick,
   buttonRef,
 }: RibbonButtonProps) {
   const unavailable = Boolean(disabled || planned);
@@ -139,6 +141,7 @@ export function RibbonButton({
         aria-expanded={hasMenu ? Boolean(expanded) : undefined}
         onMouseDown={keepFocus}
         onClick={unavailable ? undefined : onClick}
+        onDoubleClick={unavailable ? undefined : onDoubleClick}
       >
         <Icon className="hw-rb-icon" />
         {label && <span className="hw-rb-label">{label}</span>}

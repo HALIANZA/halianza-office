@@ -1,5 +1,16 @@
 import { lazy, type ComponentType, type ReactNode } from "react";
 import { listDocuments } from "@halianza/writer/documents";
+import {
+  DocumentIcon,
+  DriveIcon,
+  MailIcon,
+  NotesIcon,
+  SheetsIcon,
+  SlidesIcon,
+  TeamsIcon,
+} from "@halianza/shared/icons";
+
+export type IconComponent = ComponentType<{ className?: string }>;
 
 export type AppId =
   "writer" | "sheets" | "slides" | "mail" | "teams" | "drive" | "notes";
@@ -12,8 +23,8 @@ export type ProductCommand = OpenRequest & { nonce: number };
 // Contrato entre o shell e cada produto da suíte.
 export type ProductProps = {
   topbarStart?: ReactNode;
-  command?: ProductCommand;
   topbarEnd?: ReactNode;
+  command?: ProductCommand;
 };
 
 export type RecentItem = {
@@ -28,7 +39,7 @@ export type SuiteApp = {
   id: AppId;
   name: string;
   description: string;
-  glyph: string;
+  icon: IconComponent;
   // Rótulo do atalho "Criar" da tela inicial.
   createLabel?: string;
   // Sem componente = produto ainda não implementado ("Em breve").
@@ -45,7 +56,7 @@ export const suiteApps: SuiteApp[] = [
     id: "writer",
     name: "Writer",
     description: "Documentos e edição de texto.",
-    glyph: "Wr",
+    icon: DocumentIcon,
     createLabel: "Novo documento",
     component: Writer,
     listRecent: () =>
@@ -58,39 +69,39 @@ export const suiteApps: SuiteApp[] = [
     id: "sheets",
     name: "Sheets",
     description: "Planilhas e cálculos.",
-    glyph: "Sh",
+    icon: SheetsIcon,
     createLabel: "Nova planilha",
   },
   {
     id: "slides",
     name: "Slides",
     description: "Criação e edição de apresentações.",
-    glyph: "Sl",
+    icon: SlidesIcon,
     createLabel: "Nova apresentação",
   },
   {
     id: "mail",
     name: "Mail",
     description: "E-mail e calendário.",
-    glyph: "Ma",
+    icon: MailIcon,
   },
   {
     id: "teams",
     name: "Teams",
     description: "Mensagens e videoconferência.",
-    glyph: "Te",
+    icon: TeamsIcon,
   },
   {
     id: "drive",
     name: "Drive",
     description: "Armazenamento e sincronização de arquivos.",
-    glyph: "Dr",
+    icon: DriveIcon,
   },
   {
     id: "notes",
     name: "Notes",
     description: "Anotações digitais.",
-    glyph: "No",
+    icon: NotesIcon,
     createLabel: "Nova anotação",
   },
 ];

@@ -127,3 +127,15 @@ export function saveWorkspace(workspace: DocumentWorkspace): boolean {
     return false;
   }
 }
+
+// Limite prático do localStorage (cerca de 5 milhões de caracteres), com folga.
+export const STORAGE_SOFT_LIMIT = 4500000;
+
+// Tamanho atual do espaço de trabalho salvo, em caracteres.
+export function workspaceSize(): number {
+  try {
+    return localStorage.getItem(STORAGE_KEY)?.length ?? 0;
+  } catch {
+    return 0;
+  }
+}

@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./tokens.css": "./src/tokens.css",
-    "./theme": "./src/theme.ts"
+    "./theme": "./src/theme.ts",
+    "./icons": "./src/icons.ts"
   },
   "scripts": {
     "format": "prettier --write .",
@@ -13,5 +14,8 @@
   },
   "devDependencies": {
     "prettier": "^3.9.10"
+  },
+  "dependencies": {
+    "@fluentui/react-icons": "^2.0.344"
   }
 }

@@ -480,3 +480,29 @@
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
+
+/* Ícones (Fluent) dentro dos blocos da tela inicial */
+.hs-rail-glyph svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hs-app-glyph svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hs-create-plus svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hs-search-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hs-switcher-icon {
+  width: 18px;
+  height: 18px;
+}

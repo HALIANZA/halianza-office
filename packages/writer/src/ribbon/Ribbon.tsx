@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import type { Editor } from "@tiptap/react";
 import { TIPS } from "./catalog";
+import FindPanel from "./FindPanel";
 import { ChevronDownIcon, ChevronUpIcon, RedoIcon, UndoIcon } from "./icons";
 import HomeTab from "./tabs/HomeTab";
 import RoadmapPanel from "./tabs/RoadmapPanel";
 import { RibbonButton } from "./ui";
+import { useFormatPainter } from "./useFormatPainter";
 import { useRibbonSnapshot } from "./useRibbonSnapshot";
 import "./ribbon.css";
 
@@ -18,14 +25,19 @@ const TABS = [
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
+type FindMode = "find" | "replace";
 
 export default function Ribbon({ editor }: { editor: Editor | null }) {
   const [activeTab, setActiveTab] = useState<TabId>("inicio");
   const [collapsed, setCollapsed] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [findMode, setFindMode] = useState<FindMode | null>(null);
+  const [findKey, setFindKey] = useState(0);
   const noticeTimer = useRef<number | undefined>(undefined);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const rootRef = useRef<HTMLDivElement>(null);
   const snap = useRibbonSnapshot(editor);
+  const painter = useFormatPainter(editor);
 
   function notify(message: string) {
     window.clearTimeout(noticeTimer.current);
@@ -35,12 +47,48 @@ export default function Ribbon({ editor }: { editor: Editor | null }) {
 
   useEffect(() => () => window.clearTimeout(noticeTimer.current), []);
 
+  function openFind(mode: FindMode) {
+    setFindMode(mode);
+    setFindKey((key) => key + 1);
+  }
+
+  // Ctrl+F localiza e Ctrl+H substitui, só quando o Writer está visível.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const root = rootRef.current;
+
+      if (
+        !(event.ctrlKey || event.metaKey) ||
+        !root ||
+        root.offsetParent === null
+      ) {
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+
+      if (key === "f") {
+        event.preventDefault();
+        setFindMode("find");
+        setFindKey((current) => current + 1);
+      } else if (key === "h") {
+        event.preventDefault();
+        setFindMode("replace");
+        setFindKey((current) => current + 1);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   function selectTab(id: TabId) {
     setActiveTab(id);
     setCollapsed(false);
   }
 
-  function handleTabKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+  function handleTabKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
     const index = TABS.findIndex((tab) => tab.id === activeTab);
     let next = index;
 
@@ -57,7 +105,7 @@ export default function Ribbon({ editor }: { editor: Editor | null }) {
   }
 
   return (
-    <div className="hw-ribbon">
+    <div className="hw-ribbon" ref={rootRef}>
       <div className="hw-ribbon-header">
         <div className="hw-qat" role="group" aria-label="Acesso rápido">
           <RibbonButton
@@ -133,11 +181,27 @@ export default function Ribbon({ editor }: { editor: Editor | null }) {
           className="hw-rb-panel"
         >
           {activeTab === "inicio" ? (
-            <HomeTab editor={editor} snap={snap} notify={notify} />
+            <HomeTab
+              editor={editor}
+              snap={snap}
+              notify={notify}
+              painter={painter}
+              onFind={openFind}
+            />
           ) : (
             <RoadmapPanel tabId={activeTab} />
           )}
         </div>
+      )}
+
+      {findMode && editor && (
+        <FindPanel
+          editor={editor}
+          mode={findMode}
+          focusKey={findKey}
+          onModeChange={setFindMode}
+          onClose={() => setFindMode(null)}
+        />
       )}
     </div>
   );

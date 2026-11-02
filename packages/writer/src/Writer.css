@@ -864,3 +864,100 @@
   font-weight: 700;
   line-height: 1.4;
 }
+
+/* Tabelas */
+.hw-document-page-content .tiptap .tableWrapper {
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+.hw-document-page-content .tiptap table {
+  margin: 0;
+}
+
+.hw-document-page-content .tiptap th,
+.hw-document-page-content .tiptap td {
+  position: relative;
+  min-width: 40px;
+}
+
+.hw-document-page-content .tiptap td p,
+.hw-document-page-content .tiptap th p {
+  margin: 0;
+}
+
+.hw-document-page-content .tiptap .selectedCell::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: "";
+  background: var(--hz-page-selection);
+  pointer-events: none;
+}
+
+.hw-document-page-content .tiptap .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: 0;
+  z-index: 3;
+  width: 4px;
+  background: var(--hz-primary);
+  pointer-events: none;
+}
+
+.hw-document-page-content .tiptap.resize-cursor {
+  cursor: col-resize;
+}
+
+/* Imagens: alinhadas à esquerda por padrão */
+.hw-document-page-content .tiptap img {
+  margin: 20px 0;
+}
+
+.hw-document-page-content .tiptap img[style*="text-align: center"] {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.hw-document-page-content .tiptap img[style*="text-align: right"] {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.hw-document-page-content .tiptap img.ProseMirror-selectednode,
+.hw-document-page-content
+  .tiptap
+  [data-type="page-break"].ProseMirror-selectednode {
+  outline: 2px solid var(--hz-primary);
+}
+
+/* Quebra de página */
+.hw-document-page-content .tiptap [data-type="page-break"] {
+  position: relative;
+  height: 24px;
+  margin: 12px 0;
+  break-after: page;
+  page-break-after: always;
+}
+
+.hw-document-page-content .tiptap [data-type="page-break"]::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  content: "";
+  border-top: 1px dashed var(--hz-page-rule);
+}
+
+.hw-document-page-content .tiptap [data-type="page-break"]::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0 8px;
+  color: var(--hz-page-text-secondary);
+  content: "Quebra de página";
+  background: var(--hz-page);
+  font-size: 10px;
+  transform: translate(-50%, -50%);
+}

@@ -126,3 +126,8 @@
   --hz-page-find: rgb(255 225 0 / 40%);
   --hz-page-find-current: rgb(255 165 0 / 55%);
 }
+
+/* Células selecionadas numa tabela (o conteúdo da página não muda com o tema). */
+:root {
+  --hz-page-selection: rgb(53 106 230 / 22%);
+}

@@ -526,3 +526,170 @@
   background: var(--hz-selection);
   border-color: var(--hz-primary);
 }
+
+/* Seletor de tabela e grade de símbolos */
+.hw-rb-tablegrid-wrap {
+  padding: var(--hz-space-2);
+}
+
+.hw-rb-tablegrid {
+  display: grid;
+  grid-template-columns: repeat(8, 18px);
+  gap: 2px;
+}
+
+.hw-rb-gridcell {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: var(--hz-surface);
+  border: 1px solid var(--hz-border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.hw-rb-gridcell-on {
+  background: var(--hz-selection);
+  border-color: var(--hz-primary);
+}
+
+.hw-rb-tablegrid-label {
+  margin-top: var(--hz-space-2);
+  color: var(--hz-text-secondary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.hw-rb-symbols {
+  display: grid;
+  grid-template-columns: repeat(8, 28px);
+  gap: 2px;
+  padding: var(--hz-space-1);
+}
+
+.hw-rb-symbol {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--hz-radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.hw-rb-symbol:hover {
+  background: var(--hz-hover);
+  border-color: var(--hz-border);
+}
+
+/* Caixas de diálogo */
+.hw-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 0;
+  color: var(--hz-text);
+  background: var(--hz-surface-overlay);
+  border: 1px solid var(--hz-border);
+  border-radius: var(--hz-radius-lg);
+  box-shadow: var(--hz-shadow-overlay);
+}
+
+.hw-dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.hw-dialog-body,
+.hw-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hz-space-3);
+}
+
+.hw-dialog-body {
+  padding: var(--hz-space-5);
+}
+
+.hw-dialog-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hw-dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hz-space-1);
+  font-size: 12px;
+}
+
+.hw-dialog-field input {
+  height: 32px;
+  padding: 0 var(--hz-space-2);
+  color: var(--hz-text);
+  background: var(--hz-surface);
+  border: 1px solid var(--hz-border);
+  border-radius: var(--hz-radius-sm);
+  font-size: 12px;
+}
+
+.hw-dialog-check {
+  display: flex;
+  align-items: center;
+  gap: var(--hz-space-2);
+  font-size: 12px;
+}
+
+.hw-dialog-check input {
+  accent-color: var(--hz-primary);
+}
+
+.hw-dialog-hint,
+.hw-dialog-error {
+  margin: 0;
+  font-size: 11px;
+}
+
+.hw-dialog-hint {
+  color: var(--hz-text-secondary);
+}
+
+.hw-dialog-error {
+  color: var(--hz-error);
+}
+
+.hw-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--hz-space-2);
+  margin-top: var(--hz-space-2);
+}
+
+.hw-dialog-extra {
+  margin-right: auto;
+}
+
+.hw-dialog-button {
+  height: 32px;
+  padding: 0 var(--hz-space-4);
+  color: var(--hz-text);
+  background: var(--hz-surface);
+  border: 1px solid var(--hz-border);
+  border-radius: var(--hz-radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.hw-dialog-button:hover {
+  background: var(--hz-hover);
+}
+
+.hw-dialog-button-primary {
+  color: var(--hz-on-primary);
+  background: var(--hz-primary);
+  border-color: var(--hz-primary);
+}
+
+.hw-dialog-button-primary:hover {
+  background: var(--hz-primary-hover);
+}
